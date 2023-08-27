@@ -122,19 +122,17 @@ public:
                     {
                         int x = overrides[new_value[i]] + 1;
                         overrides[new_value[i]] = x;
-                        std::cout << "A" << std::endl;
+                        //std::cout << "A" << std::endl;
                     }
                     else
                         overrides.insert({new_value[i], 1});
-                    std::cout << overrides[new_value[i]] << " " << new_value[i] << std::endl;
+                    //std::cout << overrides[new_value[i]] << " " << new_value[i] << std::endl;
                     new_value[i].append(ft_itoa(overrides[new_value[i]]));
                 }
                 querying_cache[header[i]].insert({new_value[i], {i, size}});   
             }
             else
             {
-                if (header.size() < i - 1)
-                    break;
                 querying_cache.insert({header[i], {}});
                 if (querying_cache[header[i]].contains(new_value[i]) == true)
                 {
@@ -180,6 +178,28 @@ public:
             }
         }
         return ret;
+    }
+
+    std::unordered_map<std::string, std::vector<int>> get_column(std::string column)
+    {
+        if (querying_cache.contains(column) == true)
+        {
+            return querying_cache[column];
+        }
+        std::unordered_map<std::string, std::vector<int>> ret;
+        return ret;
+    }
+
+    bool exists(std::string column, std::string value)
+    {
+        if (querying_cache.contains(column) == true)
+        {
+            if (querying_cache[column].contains(value) == true)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     void remove_value(int index)
@@ -228,6 +248,4 @@ private:
     std::unordered_map<std::string, std::unordered_map<std::string, std::vector<int>>> querying_cache;
     std::map<std::string, int> overrides;
     int size = 0;
-
-
 };

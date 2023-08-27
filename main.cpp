@@ -87,6 +87,11 @@ void show()
     return;
 }
 
+constexpr unsigned int str2int(const char* str, int h = 0)
+{
+    return !str[h] ? 5381 : (str2int(str, h+1) * 33) ^ str[h];
+}
+
 void load_to_db(XLWorksheet wks, int num)
 {
     uint16_t col = 1;
@@ -105,7 +110,7 @@ void load_to_db(XLWorksheet wks, int num)
         {
             return;
         }
-        if (i < 14)
+        if (i < 18 && num == 0)
             continue;
         int a = dbs[num].get_header().size();
         //std::cout << a<< std::endl;
@@ -117,25 +122,52 @@ void load_to_db(XLWorksheet wks, int num)
         {
             if (i2 == a)
                 break;
-            if (ptr->value().operator OpenXLSX::XLCellValue().typeAsString().compare("integer") == 0)
+            
+            if (ptr == cells.begin() && num == 0)
+                continue;
+            std::string type = ptr->value().operator OpenXLSX::XLCellValue().typeAsString();
+            switch (str2int(type.c_str()))
             {
+            case str2int("integer"):
                 values.push_back(ft_itoa(ptr->value().operator OpenXLSX::XLCellValue()));
-            }
-            if (ptr->value().typeAsString().compare("empty") == 0)
-            {
-                values.push_back("");
-            }
-            if (ptr->value().operator OpenXLSX::XLCellValue().typeAsString().compare("string") == 0)
-            {
+                continue;
+            
+            case str2int("empty"):
+                values.push_back(" ");
+                continue;
+
+            case str2int("string"):
                 values.push_back(ptr->value().operator OpenXLSX::XLCellValue().get<std::string>());
+                continue;
+
+            default:
+                values.push_back(" ");
             }
             
             //wkb.cell(XLCellReference(row, col)).value() = ptr->value().operator OpenXLSX::XLCellValue();
             col++;
             i2++;
         }
-        //std::cout << values.size() << std::endl;
-        dbs[num].add_value(values);
+        int noempty = 0;
+        for (int x = 0; x < dbs[num].header_size(); x++)
+        {
+            if (x >= values.size())
+                break;
+            if (values[x].empty() != true)
+                noempty++;
+        }
+        if (noempty == 0)
+            continue;
+
+        if (values.size() == dbs[num].header_size())
+        {
+            dbs[num].add_value(values);
+        }
+        else
+        {
+            values.resize(dbs[num].header_size());
+            dbs[num].add_value(values);
+        }
         row++;
     }
 }
@@ -192,11 +224,46 @@ int main()
 
     load_1.join();
     load_2.join();
+    
+    
     std::cout << " ?" << dbs[0].get_size() << std::endl;
     std::cout << " ?" << dbs[1].get_size() << std::endl;
     //show();
+    std::unordered_map<std::string, std::vector<int>> col = dbs[0].get_column("ITEM");
+    std::unordered_map<std::string, std::vector<int>> col2 = dbs[1].get_column("CANDIDATO");
+    std::unordered_map<std::string, std::unordered_map<std::string, std::vector<int>>> querying = dbs[1].cache();
+
+    /*for (const auto & [ key, value ] : col) 
+    {
+        std::cout << " column: " << key << " value :" << value[0] << ", "  << value[1] << std::endl;
+    }
+
+    for (const auto & [ key, value ] : col2) 
+    {
+        std::cout << " column: " << key << " value :" << value[0] << ", "  << value[1] << std::endl;
+    }*/
+
+    uint32_t row = 393;
+    for (auto& [key, value]: col)
+    {
+        //std::cout << "A" << std::endl;
+        if (col2.contains(key) != true)
+        {
+            if (key.empty() == true)
+                continue;
+            
+            std::vector<std::string> values = dbs[0].get_value(value[1]);
+            for (uint16_t i = 0; i < dbs[0].header_size(); i++)
+            {
+                wkc.cell(XLCellReference(row, i + 1)).value() = values[i];
+            }
+            row++;
+        }
+    }
 
     write.save();
     write.close();
     doc.close();
+    comp.save();
+    comp.close();
 }
