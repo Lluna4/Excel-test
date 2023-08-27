@@ -243,6 +243,7 @@ int main()
         std::cout << " column: " << key << " value :" << value[0] << ", "  << value[1] << std::endl;
     }*/
 
+    //print to excel
     uint32_t row = 393;
     for (auto& [key, value]: col)
     {
@@ -253,9 +254,13 @@ int main()
                 continue;
             
             std::vector<std::string> values = dbs[0].get_value(value[1]);
+            int col = 0;
             for (uint16_t i = 0; i < dbs[0].header_size(); i++)
             {
-                wkc.cell(XLCellReference(row, i + 1)).value() = values[i];
+                if (values[i].compare(" ") == 0)
+                    continue;
+                wkc.cell(XLCellReference(row, col + 1)).value() = values[i];
+                col++;
             }
             row++;
         }
