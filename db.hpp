@@ -217,6 +217,11 @@ public:
         return values[index];
     }
 
+    std::string get_item(int row, int column)
+    {
+        return values[row][column];
+    }
+
     std::string get_name()
     {
         return name_;

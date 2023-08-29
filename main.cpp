@@ -1,5 +1,6 @@
 #include "db.hpp"
-//#include <external/nowide/nowide/iostream.hpp>
+//TODO: Cambiar unordered_map a map
+
 
 using namespace OpenXLSX;
 std::vector<std::string> header;
@@ -233,9 +234,10 @@ int main()
     std::unordered_map<std::string, std::vector<int>> col2 = dbs[1].get_column("CANDIDATO");
     std::unordered_map<std::string, std::unordered_map<std::string, std::vector<int>>> querying = dbs[1].cache();
 
-    /*for (const auto & [ key, value ] : col) 
+    /*
+    for (const auto & [ key, value ] : col) 
     {
-        std::cout << " column: " << key << " value :" << value[0] << ", "  << value[1] << std::endl;
+        std::cout << " value: " << key << " column: " << value[0] << ", row "  << value[1] << std::endl;
     }
 
     for (const auto & [ key, value ] : col2) 
@@ -253,14 +255,14 @@ int main()
             if (key.empty() == true)
                 continue;
             
-            std::vector<std::string> values = dbs[0].get_value(value[1]);
+            //std::vector<std::string> values = dbs[0].get_value(value[1]);
             int col = 0;
             for (uint16_t i = 0; i < dbs[0].header_size(); i++)
             {
-                if (values[i].compare(" ") == 0)
+                if (dbs[0].get_item(value[1], value[0]).compare(" ") == 0)
                     continue;
-                wkc.cell(XLCellReference(row, col + 1)).value() = values[i];
-                col++;
+                wkc.cell(XLCellReference(row, col + 1)).value() = dbs[0].get_item(value[1], value[0]);
+                break;
             }
             row++;
         }
