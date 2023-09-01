@@ -14,6 +14,39 @@
 #include <format>
 #include <OpenXLSX.hpp>
 
+class usuario
+{
+    public:
+        usuario() {}
+
+        usuario(std::string nombre, std::string dni, std::string item, std::string fecha, std::string nota)
+            :nombre_(nombre), dni_(dni), item_(item), fecha_(fecha), nota_(nota)
+        {}
+
+        std::string name()
+        {
+            return nombre_;
+        }
+
+        std::string dni()
+        {
+            return dni_;
+        }
+
+        std::string item()
+        {
+            return item_;
+        }
+
+    private:
+        std::string nombre_;
+        std::string dni_;
+        std::string item_;
+        std::string fecha_;
+        std::string nota_;
+}
+
+
 int	ft_atoi(const char* a)
 {
     int	ret;

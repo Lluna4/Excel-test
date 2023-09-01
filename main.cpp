@@ -7,6 +7,7 @@ std::vector<std::string> header;
 //std::ofstream db_writee("log.txt", std::ios_base::app);
 std::vector<db> dbs;
 
+
 void print_line(std::vector<std::string> header)
 {
     for (unsigned int i = 0; i < header.size(); i++)
