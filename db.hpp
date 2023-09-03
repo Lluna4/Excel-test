@@ -19,31 +19,23 @@ class usuario
     public:
         usuario() {}
 
-        usuario(std::string nombre, std::string dni, std::string item, std::string fecha, std::string nota)
-            :nombre_(nombre), dni_(dni), item_(item), fecha_(fecha), nota_(nota)
+        usuario(std::string dni, std::vector<std::string> &fila)
+            :dni_(dni), fila_(fila)
         {}
-
-        std::string name()
-        {
-            return nombre_;
-        }
 
         std::string dni()
         {
             return dni_;
         }
 
-        std::string item()
+        std::vector<std::string> fila()
         {
-            return item_;
+            return fila_;
         }
 
     private:
-        std::string nombre_;
         std::string dni_;
-        std::string item_;
-        std::string fecha_;
-        std::string nota_;
+        std::vector<std::string> fila_;
 }
 
 
