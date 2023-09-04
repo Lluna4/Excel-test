@@ -33,11 +33,80 @@ class usuario
             return fila_;
         }
 
+        bool exists(std::string item)
+        {
+            if (first == true)
+            {
+                for (int i = 0; i < fila_.size(); i++)
+                {
+                    if (fila_[i].compare(item) == 0)
+                        return true;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < filas.size(); i++)
+                {
+                    for (int x = 0; x < filas[i].size(); x++)
+                    {
+                        if (filas[i][x].compare(item) == 0)
+                            return true;
+                    } 
+                }
+            }
+            return false;
+        }
+
+        bool exists(std::vector<std::string> items)
+        {
+            for (int a = 0; a < items.size(); a++)
+            {
+                if (first == true)
+                {
+                    for (int i = 0; i < fila_.size(); i++)
+                    {
+                        if (fila_[i].compare(items[a]) == 0)
+                            return true;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < filas.size(); i++)
+                    {
+                        for (int x = 0; x < filas[i].size(); x++)
+                        {
+                            if (filas[i][x].compare(items[a]) == 0)
+                                return true;
+                        } 
+                    }
+                }
+            }
+            return false;
+        }
+
+        void new_row(std::vector<std::string> new_item)
+        {
+            if (this->exists(new_item) == true)
+                return;
+            filas.push_back(new_item);
+        }
+
     private:
         std::string dni_;
         std::vector<std::string> fila_;
-}
+        std::vector<std::vector<std::string>> filas;
+        bool first = true;
+};
 
+class usuarios
+{
+    public:
+        usuarios() {}
+
+    private:
+        std::vector<usuario> usuarios_;
+
+};
 
 int	ft_atoi(const char* a)
 {
