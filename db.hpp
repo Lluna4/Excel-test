@@ -19,7 +19,7 @@ class usuario
     public:
         usuario() {}
 
-        usuario(std::string dni, std::vector<std::string> &fila)
+        usuario(std::string dni, std::vector<std::string> fila)
             :dni_(dni)
         {
             filas.push_back(fila);
@@ -66,6 +66,11 @@ class usuario
             filas.push_back(new_item);
         }
 
+        std::vector<std::vector<std::string>> rows()
+        {
+            return filas;
+        }
+
     private:
         std::string dni_;
         std::vector<std::vector<std::string>> filas;
@@ -75,6 +80,9 @@ class usuario
 class usuarios
 {
     public:
+
+        usuarios() {}
+
         usuarios(usuario valor_inicial) 
     {
         dnis.push_back(valor_inicial.dni());
@@ -92,8 +100,36 @@ class usuarios
 
     void add(usuario nuevo)
     {
-        dnis.push_back(nuevo.dni());
-        usuarios_.push_back(nuevo);
+        std::string item = nuevo.dni();
+        if (isdigit(item.back()) != 0)
+        {
+            item.pop_back();
+        }
+        std::cout << dnis.size() << std::endl;
+        if (dnis.size() > 0)
+            std::cout << dnis.back() << nuevo.dni() << std::endl;
+
+        if (this->exists(nuevo.dni()) == true)
+        {
+            std::vector<std::vector<std::string>> filas = nuevo.rows();
+            for (int i = 0; i < filas.size(); i++)
+            {
+                auto a = std::find(dnis.begin(), dnis.end(), nuevo.dni());
+                int index = a - dnis.begin();
+                usuarios_[index].new_row(filas[i]);
+            }
+            return;
+        }
+        else
+        {
+            dnis.push_back(nuevo.dni());
+            usuarios_.push_back(nuevo);
+        }
+    }
+
+    int size()
+    {
+        return usuarios_.size();
     }
 
     private:
@@ -276,6 +312,14 @@ public:
         }
         std::unordered_map<std::string, std::vector<int>> ret;
         return ret;
+    }
+
+    void column_names()
+    {
+        for (auto& [key, value]: querying_cache)
+        {
+            std::cout << key << std::endl;
+        }
     }
 
     bool exists(std::string column, std::string value)

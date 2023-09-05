@@ -6,7 +6,7 @@ using namespace OpenXLSX;
 std::vector<std::string> header;
 //std::ofstream db_writee("log.txt", std::ios_base::app);
 std::vector<db> dbs;
-
+usuarios users;
 
 void print_line(std::vector<std::string> header)
 {
@@ -174,10 +174,25 @@ void load_to_db(XLWorksheet wks, int num)
     }
 }
 
-/*void crear_usuarios()
+void crear_usuarios()
 {
-
-}*/
+    std::unordered_map<std::string, std::vector<int>> col = dbs[0].get_column("DNI");
+    for (auto& [key, value]: col)
+    {
+        if (key.empty() == true)
+            continue;
+        std::vector<std::string> row;
+        for (uint16_t i = 0; i < dbs[0].header_size(); i++)
+        {
+            std::string item = dbs[0].get_item(value[1], value[0]);
+            if (item.compare(" ") == 0)
+                continue;
+            row.push_back(dbs[0].get_item(value[1], value[0]));
+            break;
+        }
+        users.add(usuario(key, row));
+    }
+}
 
 int main() 
 {
@@ -202,14 +217,38 @@ int main()
     auto rows = wks.row(14);
     auto cells = rows.cells();
     //load header into db
+    int col_index = 0;
     for (auto ptr = cells.begin(); ptr != cells.end(); ptr.operator++())
     {
+        col_index++;
+
+        if (col_index == 22)
+            break;
         if (ptr->value().operator OpenXLSX::XLCellValue().get<std::string>().compare("ITEM") == 0)
             std::cout << ptr->value().typeAsString() << ptr->value().operator OpenXLSX::XLCellValue() << std::endl;
         if (ptr->value().typeAsString().compare("empty") == 0)
             continue;
         header.push_back(ptr->value().operator OpenXLSX::XLCellValue().get<std::string>());
     }
+
+    //load header for db part 2 because human readable format
+    auto rows3 = wks.row(15);
+    auto cells3 = rows3.cells();
+
+    col_index = 0;
+    for (auto ptr = cells3.begin(); ptr != cells3.end(); ptr.operator++())
+    {
+        col_index++;
+
+        if (col_index <= 21)
+            continue;
+        if (ptr->value().operator OpenXLSX::XLCellValue().get<std::string>().compare("ITEM") == 0)
+            std::cout << ptr->value().typeAsString() << ptr->value().operator OpenXLSX::XLCellValue() << std::endl;
+        if (ptr->value().typeAsString().compare("empty") == 0)
+            continue;
+        header.push_back(ptr->value().operator OpenXLSX::XLCellValue().get<std::string>());
+    }
+
     dbs.push_back(db("tabla", header));
 
     auto rows2 = wkc.row(1);
@@ -273,6 +312,9 @@ int main()
             row++;
         }
     }
+    crear_usuarios();
+    std::cout << "usuarios creados " << "size: " << users.size() << std::endl;
+    dbs[0].column_names();
 
     write.save();
     write.close();
