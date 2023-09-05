@@ -108,10 +108,24 @@ class usuarios
         usuarios_.push_back(valor_inicial);
     }
 
+    void exists(std::string dni)
+    {
+        if (dnis.con)
+    }
+
     void add(usuario nuevo)
     {
         dnis.push_back(nuevo.dni());
         usuarios_.push_back(nuevo);
+    }
+
+    bool exists(std::string dni)
+    {
+        std::string check = std::find(dnis.begin(), dnis.end(), dni);
+        if (check == dnis.end())
+            return false;
+        else
+            return true;
     }
 
     private:
