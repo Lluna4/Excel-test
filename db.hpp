@@ -30,31 +30,15 @@ class usuario
             return dni_;
         }
 
-        std::vector<std::string> fila()
-        {
-            return fila_;
-        }
-
         bool exists(std::string item)
         {
-            if (first == true)
+            for (int i = 0; i < filas.size(); i++)
             {
-                for (int i = 0; i < fila_.size(); i++)
+                for (int x = 0; x < filas[i].size(); x++)
                 {
-                    if (fila_[i].compare(item) == 0)
+                    if (filas[i][x].compare(item) == 0)
                         return true;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < filas.size(); i++)
-                {
-                    for (int x = 0; x < filas[i].size(); x++)
-                    {
-                        if (filas[i][x].compare(item) == 0)
-                            return true;
-                    } 
-                }
+                } 
             }
             return false;
         }
@@ -63,24 +47,13 @@ class usuario
         {
             for (int a = 0; a < items.size(); a++)
             {
-                if (first == true)
+                for (int i = 0; i < filas.size(); i++)
                 {
-                    for (int i = 0; i < fila_.size(); i++)
+                    for (int x = 0; x < filas[i].size(); x++)
                     {
-                        if (fila_[i].compare(items[a]) == 0)
+                        if (filas[i][x].compare(items[a]) == 0)
                             return true;
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < filas.size(); i++)
-                    {
-                        for (int x = 0; x < filas[i].size(); x++)
-                        {
-                            if (filas[i][x].compare(items[a]) == 0)
-                                return true;
-                        } 
-                    }
+                    } 
                 }
             }
             return false;
@@ -108,24 +81,19 @@ class usuarios
         usuarios_.push_back(valor_inicial);
     }
 
-    void exists(std::string dni)
+    bool exists(std::string dni)
     {
-        if (dnis.con)
+        auto check = std::find(dnis.begin(), dnis.end(), dni);
+        if (check == dnis.end())
+            return false;
+        else
+            return true;
     }
 
     void add(usuario nuevo)
     {
         dnis.push_back(nuevo.dni());
         usuarios_.push_back(nuevo);
-    }
-
-    bool exists(std::string dni)
-    {
-        std::string check = std::find(dnis.begin(), dnis.end(), dni);
-        if (check == dnis.end())
-            return false;
-        else
-            return true;
     }
 
     private:
