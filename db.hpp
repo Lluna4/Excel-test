@@ -20,8 +20,10 @@ class usuario
         usuario() {}
 
         usuario(std::string dni, std::vector<std::string> &fila)
-            :dni_(dni), fila_(fila)
-        {}
+            :dni_(dni)
+        {
+            filas.push_back(fila);
+        }
 
         std::string dni()
         {
@@ -93,18 +95,28 @@ class usuario
 
     private:
         std::string dni_;
-        std::vector<std::string> fila_;
         std::vector<std::vector<std::string>> filas;
-        bool first = true;
+        bool first = false;
 };
 
 class usuarios
 {
     public:
-        usuarios() {}
+        usuarios(usuario valor_inicial) 
+    {
+        dnis.push_back(valor_inicial.dni());
+        usuarios_.push_back(valor_inicial);
+    }
+
+    void add(usuario nuevo)
+    {
+        dnis.push_back(nuevo.dni());
+        usuarios_.push_back(nuevo);
+    }
 
     private:
         std::vector<usuario> usuarios_;
+        std::vector<std::string> dnis;
 
 };
 
