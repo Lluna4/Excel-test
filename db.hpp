@@ -107,7 +107,7 @@ class usuarios
         }
         std::cout << dnis.size() << std::endl;
         if (dnis.size() > 0)
-            std::cout << dnis.back() << nuevo.dni() << std::endl;
+            std::cout << dnis.back() << " " << nuevo.dni() << std::endl;
 
         if (this->exists(nuevo.dni()) == true)
         {
@@ -130,6 +130,13 @@ class usuarios
     int size()
     {
         return usuarios_.size();
+    }
+
+    usuario user(unsigned int index)
+    {
+        if (index > usuarios_.size())
+            return usuario();
+        return usuarios_[index];
     }
 
     private:
@@ -238,6 +245,8 @@ public:
         values.push_back(new_value);
         for (int i = 0; i < header.size(); i++)
         {
+            if (i > new_value.size() - 1)
+                break;
             if (querying_cache.contains(header[i]) == true) 
             {
                 if (querying_cache[header[i]].contains(new_value[i]) == true)
@@ -377,6 +386,8 @@ public:
     {
         return querying_cache;
     }
+
+    
 
 private:
     std::string name_;

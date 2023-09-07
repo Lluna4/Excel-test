@@ -151,14 +151,19 @@ void load_to_db(XLWorksheet wks, int num)
             i2++;
         }
         int noempty = 0;
+        int ones = 0;
         for (int x = 0; x < dbs[num].header_size(); x++)
         {
             if (x >= values.size())
                 break;
             if (values[x].empty() != true)
                 noempty++;
+            if (values[x].size() == 1)
+                ones++;
         }
         if (noempty == 0)
+            continue;
+        if (ones > (int)(values.size() / 2))
             continue;
 
         if (values.size() == dbs[num].header_size())
@@ -179,18 +184,17 @@ void crear_usuarios()
     std::unordered_map<std::string, std::vector<int>> col = dbs[0].get_column("DNI");
     for (auto& [key, value]: col)
     {
+        std::string mod_key = key;
+        if (isdigit(key.back()) != 0 && isalpha(key[key.length() - 2]) != 0) 
+        {
+            mod_key.pop_back();
+        }
         if (key.empty() == true)
             continue;
-        std::vector<std::string> row;
-        for (uint16_t i = 0; i < dbs[0].header_size(); i++)
-        {
-            std::string item = dbs[0].get_item(value[1], value[0]);
-            if (item.compare(" ") == 0)
-                continue;
-            row.push_back(dbs[0].get_item(value[1], value[0]));
-            break;
-        }
-        users.add(usuario(key, row));
+        std::vector<std::string> row = dbs[0].get_value(value[1]);
+        if (row.size() <= 0)
+            continue;
+        users.add(usuario(mod_key, row));
     }
 }
 
@@ -314,7 +318,11 @@ int main()
     }
     crear_usuarios();
     std::cout << "usuarios creados " << "size: " << users.size() << std::endl;
-    dbs[0].column_names();
+    //dbs[0].column_names();
+    usuario aa = users.user(100);
+    std::vector<std::vector<std::string>> ab = aa.rows();
+    std::cout << ab.size() << " " << ab[0].size() << std::endl;
+    std::cout << ab[0][0] << std::endl;
 
     write.save();
     write.close();
