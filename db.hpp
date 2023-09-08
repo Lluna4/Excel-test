@@ -61,8 +61,8 @@ class usuario
 
         void new_row(std::vector<std::string> new_item)
         {
-            if (this->exists(new_item) == true)
-                return;
+            /*if (this->exists(new_item) == true)
+                return;*/
             filas.push_back(new_item);
         }
 
@@ -112,6 +112,7 @@ class usuarios
         if (this->exists(nuevo.dni()) == true)
         {
             std::vector<std::vector<std::string>> filas = nuevo.rows();
+            std::cout << "Ya existe" << nuevo.dni() << std::endl;
             for (int i = 0; i < filas.size(); i++)
             {
                 auto a = std::find(dnis.begin(), dnis.end(), nuevo.dni());
