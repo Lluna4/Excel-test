@@ -171,6 +171,16 @@ int	ft_atoi(const char* a)
     return (sign * ret);
 }
 
+bool isNumber(std::string a)
+{
+    for (int i = 0; i < a.length(); i++)
+    {
+        if (isdigit(a[i]) == 0)
+            return false;
+    }
+    return true;
+}
+
 static int	ft_intlen(int n)
 {
 	int	ret;

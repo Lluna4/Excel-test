@@ -278,52 +278,40 @@ int main()
     
     std::cout << " ?" << dbs[0].get_size() << std::endl;
     std::cout << " ?" << dbs[1].get_size() << std::endl;
-    //show();
-    std::unordered_map<std::string, std::vector<int>> col = dbs[0].get_column("ITEM");
-    std::unordered_map<std::string, std::vector<int>> col2 = dbs[1].get_column("CANDIDATO");
-    std::unordered_map<std::string, std::unordered_map<std::string, std::vector<int>>> querying = dbs[1].cache();
 
-    /*
-    for (const auto & [ key, value ] : col) 
-    {
-        std::cout << " value: " << key << " column: " << value[0] << ", row "  << value[1] << std::endl;
-    }
 
-    for (const auto & [ key, value ] : col2) 
-    {
-        std::cout << " column: " << key << " value :" << value[0] << ", "  << value[1] << std::endl;
-    }*/
-
-    //print to excel
-    uint32_t row = 393;
-    for (auto& [key, value]: col)
-    {
-        //std::cout << "A" << std::endl;
-        if (col2.contains(key) != true)
-        {
-            if (key.empty() == true)
-                continue;
-            
-            //std::vector<std::string> values = dbs[0].get_value(value[1]);
-            int col = 0;
-            for (uint16_t i = 0; i < dbs[0].header_size(); i++)
-            {
-                if (dbs[0].get_item(value[1], value[0]).compare(" ") == 0)
-                    continue;
-                wkc.cell(XLCellReference(row, col + 1)).value() = dbs[0].get_item(value[1], value[0]);
-                break;
-            }
-            row++;
-        }
-    }
     crear_usuarios();
     std::cout << "usuarios creados " << "size: " << users.size() << std::endl;
-    //dbs[0].column_names();
-    usuario aa = users.user(100);
-    std::vector<std::vector<std::string>> ab = aa.rows();
-    std::cout << ab.size() << " " << ab[0].size() << std::endl;
-    std::cout << ab[0][0] << std::endl;
 
+    std::unordered_map<std::string, std::vector<int>> col = dbs[1].get_column("CANDIDATO");
+
+    for (int i = 0; i < users.size(); i++)
+    {
+        std::vector<std::string> ret;
+        usuario user = users.user(i);
+        if (user.rows().size() < 1)
+            break;
+        std::vector<std::vector<std::string>> user_rows = user.rows();
+        if (col.contains(user_rows[user_rows.size() - 1][18]) == false)
+        {
+            ret.push_back(user_rows[user_rows.size() - 1][18]);
+            std::string fecha = user_rows[user_rows.size() - 1][62];
+            std::string year = fecha.substr(fecha.length() - 4);
+            if (isNumber(year) == true)
+            {
+                ret.push_back(year);
+                ret.push_back(fecha);
+            }
+            else
+                continue;
+            ret.push_back(user_rows[user_rows.size() - 1][10]);
+            ret.push_back(user_rows[user_rows.size() - 1][11]);
+        }
+        else
+            continue;
+    }
+
+    
     write.save();
     write.close();
     doc.close();
